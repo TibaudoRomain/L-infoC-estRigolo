@@ -1,3 +1,4 @@
+
 #define LIGHT_SENSOR_PIN A0
 
 #define PROX_SENSOR_L_PIN A1
@@ -16,6 +17,8 @@
 #define MOTOR_LB_PIN 8
 #define MOTOR_L_SPEED 5
 
+
+
 void hardware_setup() {
   new DCMotor_Hbridge(MOTOR_RF_PIN, MOTOR_RB_PIN, MOTOR_R_SPEED, "ePuck_rightJoint", 2.5, 3 * 3.14159, 1);
   new DCMotor_Hbridge(MOTOR_LF_PIN, MOTOR_LB_PIN, MOTOR_L_SPEED, "ePuck_leftJoint", 2.5, 3 * 3.14159, 1);
@@ -32,15 +35,6 @@ void hardware_setup() {
   new ProximitySensor(PROX_SENSOR_DR_PIN, "ePuck_proxSensor5", 0.1, 1);
 }
 
-int FL(){return digitalRead(PROX_SENSOR_FL_PIN);} //Front-Left Sensor
-int FR(){return digitalRead(PROX_SENSOR_FR_PIN);} //Front-Right Sensor
-int L(){return digitalRead(PROX_SENSOR_L_PIN);} //90° Left Sensor
-int R(){return digitalRead(PROX_SENSOR_R_PIN);} //90° Right Sensor
-int BR(){return digitalRead(PROX_SENSOR_RL_PIN);} //135° Right Sensor
-int BL(){return digitalRead(PROX_SENSOR_RR_PIN);} //135° Left Sensor
-int FLL(){return digitalRead(PROX_SENSOR_DL_PIN);}  //45° Left Sensor 
-int FRR(){return digitalRead(PROX_SENSOR_DR_PIN);}  //45° Right Sensor
-
 void setup() {
   Serial.begin(4800);
 
@@ -52,99 +46,221 @@ void setup() {
   pinMode(MOTOR_L_SPEED, OUTPUT);
 
   // Set speed to max
-  analogWrite(MOTOR_R_SPEED, 100);
-  analogWrite(MOTOR_L_SPEED, 100);
-
-  digitalWrite(MOTOR_RF_PIN, LOW);
-  digitalWrite(MOTOR_RB_PIN, LOW);
-  digitalWrite(MOTOR_LF_PIN, LOW);
-  digitalWrite(MOTOR_LB_PIN, LOW);
+  analogWrite(MOTOR_R_SPEED, 200);
+  analogWrite(MOTOR_L_SPEED, 200);
+  
+  
 }
 
-//These control the mouvement of the robot
+int v = 100 ;
+unsigned long Time=0;
+
 void stop(){
     digitalWrite(MOTOR_RF_PIN, LOW);
     digitalWrite(MOTOR_RB_PIN, LOW);
     digitalWrite(MOTOR_LF_PIN, LOW);
-    digitalWrite(MOTOR_LB_PIN, LOW);
+    digitalWrite(MOTOR_LB_PIN, LOW);   
 }
 
 void front(){
+    analogWrite(MOTOR_R_SPEED, v);
+    analogWrite(MOTOR_L_SPEED, v);
     digitalWrite(MOTOR_RF_PIN, HIGH);
     digitalWrite(MOTOR_RB_PIN, LOW);
     digitalWrite(MOTOR_LF_PIN, HIGH);
     digitalWrite(MOTOR_LB_PIN, LOW);
+    delay(50);
 }
-void back(){
-    digitalWrite(MOTOR_RF_PIN, LOW);
-    digitalWrite(MOTOR_RB_PIN, HIGH);
-    digitalWrite(MOTOR_LF_PIN, LOW);
-    digitalWrite(MOTOR_LB_PIN, HIGH);
-}
-void left(){
+
+
+void rotate_left(){
+  analogWrite(MOTOR_R_SPEED, v/3);
+  analogWrite(MOTOR_L_SPEED, v/3);
   digitalWrite(MOTOR_RF_PIN, HIGH);
   digitalWrite(MOTOR_RB_PIN, LOW);
   digitalWrite(MOTOR_LF_PIN, LOW);
-  digitalWrite(MOTOR_LB_PIN, LOW);
+  digitalWrite(MOTOR_LB_PIN, HIGH);
+
+
 }
-void right(){
+
+
+void rotate_right(){
+  analogWrite(MOTOR_R_SPEED, v/3);
+  analogWrite(MOTOR_L_SPEED, v/3);
   digitalWrite(MOTOR_RF_PIN, LOW);
+  digitalWrite(MOTOR_RB_PIN, HIGH);
+  digitalWrite(MOTOR_LF_PIN, HIGH);
+  digitalWrite(MOTOR_LB_PIN, LOW);
+
+
+}
+
+void little_left(){
+  analogWrite(MOTOR_R_SPEED, v/0.9);
+  analogWrite(MOTOR_L_SPEED, v);
+  digitalWrite(MOTOR_RF_PIN, HIGH);
   digitalWrite(MOTOR_RB_PIN, LOW);
   digitalWrite(MOTOR_LF_PIN, HIGH);
   digitalWrite(MOTOR_LB_PIN, LOW);
-}
 
-void left_back(){
-  digitalWrite(MOTOR_RF_PIN, LOW);
-  digitalWrite(MOTOR_RB_PIN, HIGH);
-  digitalWrite(MOTOR_LF_PIN, LOW);
-  digitalWrite(MOTOR_LB_PIN, LOW);
-}
 
-void right_back(){
-  digitalWrite(MOTOR_RF_PIN, LOW);
+}
+void little_right(){
+  analogWrite(MOTOR_R_SPEED, v);
+  analogWrite(MOTOR_L_SPEED, v/0.9);
+  digitalWrite(MOTOR_RF_PIN, HIGH);
   digitalWrite(MOTOR_RB_PIN, LOW);
-  digitalWrite(MOTOR_LF_PIN, LOW);
-  digitalWrite(MOTOR_LB_PIN, HIGH);
+  digitalWrite(MOTOR_LF_PIN, HIGH);
+  digitalWrite(MOTOR_LB_PIN, LOW);
+    
+
 }
 
-void set_speed(int s){
-  analogWrite(MOTOR_R_SPEED, s);
-  analogWrite(MOTOR_L_SPEED, s);
+void very_little_left(){
+  analogWrite(MOTOR_R_SPEED, v/0.95);
+  analogWrite(MOTOR_L_SPEED, v);
+  digitalWrite(MOTOR_RF_PIN, HIGH);
+  digitalWrite(MOTOR_RB_PIN, LOW);
+  digitalWrite(MOTOR_LF_PIN, HIGH);
+  digitalWrite(MOTOR_LB_PIN, LOW);
+
+
+
+}
+void very_little_right(){
+  analogWrite(MOTOR_R_SPEED, v);
+  analogWrite(MOTOR_L_SPEED, v/0.95);
+  digitalWrite(MOTOR_RF_PIN, HIGH);
+  digitalWrite(MOTOR_RB_PIN, LOW);
+  digitalWrite(MOTOR_LF_PIN, HIGH);
+  digitalWrite(MOTOR_LB_PIN, LOW);
+
+
 }
 
-// detect_noir stops the robot when it reach the goal
-void detect_noir(){
-  if (digitalRead(LIGHT_SENSOR_PIN)==0) {
-    stop();
-    delay(100);
+int FL(){return digitalRead(PROX_SENSOR_FL_PIN);} //Front-Left Sensor
+int FR(){return digitalRead(PROX_SENSOR_FR_PIN);} //Front-Right Sensor
+int L(){return digitalRead(PROX_SENSOR_L_PIN);} //90° Left Sensor
+int R(){return digitalRead(PROX_SENSOR_R_PIN);} //90° Right Sensor
+int BR(){return digitalRead(PROX_SENSOR_RL_PIN);} //135° Right Sensor
+int BL(){return digitalRead(PROX_SENSOR_RR_PIN);} //135° Left Sensor
+int FLL(){return digitalRead(PROX_SENSOR_DL_PIN);}  //45° Left Sensor 
+int FRR(){return digitalRead(PROX_SENSOR_DR_PIN);}  //45° Right Sensor
+int Light(){return digitalRead(LIGHT_SENSOR_PIN);} //Light sensor
+int FL_anlg(){return analogRead(PROX_SENSOR_FL_PIN);} //analog read of Front-Left Sensor
+int FR_anlg(){return analogRead(PROX_SENSOR_FR_PIN);} //analog read of Front-Right Sensor
+
+
+
+bool AL=true;
+
+void finish(){
+  if (Light()==0 && AL){
+      Time = millis();
+      AL=false;
   }
-  else {front();}
+  if (Light()==1){AL=true;}
+  if(millis() > Time + 200 && !AL){
+      Serial.println("delayed");
+      stop();
+      delay(500);
+  }
 }
-
-//mapping maze into a matrice
-#include<iostream>
-using namespace std; 
-void mappring(int nb_lignes,int nb_collones){  
-	int arr[nb_lignes][nb_collones] 
-		
-	int i,j;
-	
-	cout<<"Printing a 2D Array:\n";
-	for(i=0;i<nb_lignes;i++)
-	{
-		for(j=0;j<nb_collones;j++)
-		{
-			cout<<"\t"<<arr[i][j];
-		}
-		cout<<endl;
-	}
-}
-
-
-
 
 void loop() {
-  set_speed(200);
-  detect_noir();
+  finish();
+  if (FL()==1||FR()==1){
+    if(FLL()==1){ 
+        while (FL()==1||FR()==1){
+          rotate_right();
+          finish();
+        }
+      }
+      else if(FRR()==1){ 
+        while (FL()==1||FR()==1){
+          rotate_left();
+          finish();
+        }  
+      }
+      else{
+            if(L()==1&&R()==0){ 
+              while (FL()==1||FR()==1){
+                rotate_right();
+                finish();
+              }
+            }
+            else if(R()==1&&L()==0){ 
+              while (FL()==1||FR()==1){
+                rotate_left();
+                finish();
+              }
+            }
+            else{ 
+              if (FL()==0){
+                while (FR()==1){
+                  rotate_left();
+                  finish();
+                }
+              }
+              else if (FR()==0){
+                while (FL()==1){
+                  rotate_right();
+                  finish();
+                }
+              }
+              else {
+                if (FL_anlg()>FR_anlg()){
+                  while (FL()==1||FR()==1){
+                    rotate_left();
+                    finish(); 
+                  }                 
+                }
+                if (FR_anlg()>FL_anlg()){
+                  while (FL()==1||FR()==1){
+                    rotate_right();
+                    finish();
+                  }
+                }
+              }
+            }
+      }
+      
+  }
+
+  else{ // on est dans le cas où aucun capteur avant n'est à 1
+      
+      if(FLL()==1){ //quand le capteur latéral avant gauche est à 1 (même si le capteur latéral droit l'est aussi) on tourne un peu à droite
+        while (FLL()==1 &&!(FL()==1||FR()==1)){ //ce qui est après le && est un moyen d'éviter la boucle infini qui peut apparaître si on est dans cette condition après avoir tourné près d'un mur et s'y être bloqué
+          little_right();
+          finish();
+        }
+      }
+      else if(FRR()==1){ //on tourne à gauche quand le capteur latéral avant droit est à 1 (et pas le capteur latéral avant gauche) on tourne un peu à gauche
+        while (FRR()==1 &&!(FL()==1||FR()==1)){
+          little_left();
+          finish();
+        }
+      }
+      else{
+            if(L()==1&&R()==0){ //tend très légèrement vers l la droite quand le capteur latéral gauche est à 1 (et pas droit)
+              while (L()==1&&R()==0 &&!(FL()==1||FR()==1)){
+                very_little_right();
+                finish();
+              }
+            }
+            if(R()==1&&L()==0){ // pareil à gauche
+              while (R()==1&&L()==0 &&!(FL()==1||FR()==1)){
+                very_little_left();
+                finish();
+              }
+            }
+            else{ //il avance vers l'avant dans le reste des cas
+              front();
+              finish();
+            }
+      }
+  }
+  delay(50);
+
 }
