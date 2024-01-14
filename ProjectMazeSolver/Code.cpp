@@ -216,7 +216,7 @@ void finish_lonjmur(){
 
 //fonction pour faire tourner le robot à droite si il est trop proche du mur de gauche ou si il détecte un mur en face
 void right(){  
-  advanced_turn(0.6,1.2);
+  advanced_turn(0.6,1.3);
   digitalWrite(MOTOR_RF_PIN, LOW);
   digitalWrite(MOTOR_RB_PIN, HIGH);
 }
