@@ -1,4 +1,7 @@
 Le code ci-joint donne au robot le comportement suivant :
-Pendant les 100 premières secondes, le robot va longer le mur à sa gauche.
 
-  Dans le cas où il atteint la case gauche 
+Pendant les 100 premières secondes, le robot va longer le mur à sa gauche.
+Dans le cas où il n'arrive pas à faire le circuit en longeant les murs, donc si le robot met trop de temps ou si il atteint la case rouge avant la noire,
+il se déplacerra aléatoirement à travers le labyrinthe jusqu'à compléter le circuit.
+
+
