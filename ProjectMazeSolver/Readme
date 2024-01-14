@@ -1,0 +1,4 @@
+Le code ci-joint donne au robot le comportement suivant :
+Pendant les 100 premières secondes, le robot va longer le mur à sa gauche.
+
+  Dans le cas où il atteint la case gauche 
